@@ -1,1 +1,9 @@
 .idea/
+
+// Project dependencies
+node_modules/
+typings/
+
+// Compiled files
+*.js
+*.map
