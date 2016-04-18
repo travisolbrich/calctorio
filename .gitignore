@@ -7,3 +7,6 @@ typings/
 // Compiled files
 *.js
 *.map
+
+// Temp files
+*~
