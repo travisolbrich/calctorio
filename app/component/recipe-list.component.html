@@ -1,0 +1,12 @@
+<h1>Recipes</h1>
+
+<ul>
+    <li *ngFor="#recipe of recipes">
+        <strong>{{ recipe.name }}</strong> in {{ recipe.time }}s
+        <ul>
+            <li *ngFor="#ingredient of recipe.ingredients">
+                {{ ingredient.count }}x {{ ingredient.name }}
+            </li>
+        </ul>
+    </li>
+</ul>
