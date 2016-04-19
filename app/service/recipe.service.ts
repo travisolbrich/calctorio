@@ -21,13 +21,10 @@ export class RecipeService {
             throw new Error("Bad response status: " + res.status);
         }
         
-        let body = res.json();
+        let recipes: Recipe[] = [];
 
-        let formatted: Recipe[];
-        formatted = [];
-
-        body.forEach((recipe:any) => {
-            let toInsert: Recipe = new Recipe(
+        res.json().forEach((recipe:any) => {
+            let newRecipe: Recipe = new Recipe(
                 recipe.type,
                 recipe.name,
                 recipe.energy_required || .5,
@@ -36,47 +33,45 @@ export class RecipeService {
                 recipe.enabled
             );
 
-            // TODO: Should this actually be in the model?
             // Some of the recipes (especially chemical ones) can have multiple results
             if(recipe.results) {
+                // If there are multiple result objects we use the output count of the output matching
+                // the recipe's name.
                 let results:Result[] = recipe.results.filter((result: Result) => {
                     return result.name == recipe.name;
                 });
 
                 if(results.length == 1){
-                    toInsert.outputCount = results[0].amount;
-                    console.debug("Setting outputCount to " + toInsert.outputCount + " for " + toInsert.name);
+                    newRecipe.outputCount = results[0].amount;
                 } else {
-                    toInsert.outputCount = 1;
-                    console.debug("Couldn't find value for " + toInsert.name);
+                    newRecipe.outputCount = 1;
+                    console.debug("Couldn't find output count for " + newRecipe.name);
                 }
             } else {
                 // For typical parts use the result_count or default to 1
-                toInsert.outputCount = recipe.result_count || 1;
+                newRecipe.outputCount = recipe.result_count || 1;
             }
 
-            // Turn the vaired ingredient inputs into instances of Ingredient
+            // Turn the vaired ingredient types into instances of Ingredient
             recipe.ingredients.forEach((ingredient:any) => {
                 if(ingredient.type != null){
-                    toInsert.ingredients.push({
+                    newRecipe.ingredients.push({
                         name: ingredient.name,
                         count: ingredient.amount
                     });
                 }
                 else {
-                    toInsert.ingredients.push({
+                    newRecipe.ingredients.push({
                         name: ingredient[0],
                         count: ingredient[1]
                     });
                 }
             });
 
-            formatted.push(toInsert);
+            recipes.push(newRecipe);
         });
 
-
-        console.log(formatted);
-        return formatted || {};
+        return recipes || {};
     }
 
     private handleError(error: any) {
