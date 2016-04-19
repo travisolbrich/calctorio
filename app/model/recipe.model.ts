@@ -19,7 +19,7 @@ export class Recipe {
         this.enabled = enabled;
     }
 
-    // TODO: Should this actually be in a service?
+    // Crafting time is based off of crafting levels or a chemistry modifier.
     getCraftingTime(craftingLevel: CraftingLevel): number{
         // Smelting is based on smelting level
         if(this.category == "smelting") {
@@ -34,7 +34,5 @@ export class Recipe {
         // Otherwise we are going to use the assembler value
         return this.energy / craftingLevel.assembler;
     }
-
-    // TODO: outputCount?
 
 }
