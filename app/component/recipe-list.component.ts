@@ -18,6 +18,11 @@ export class RecipeListComponent implements OnInit {
         this.craftingLevel = {assembler: 1, smelter: 1};
         this.getRecipes();
     }
+
+    onKey(value:string) {
+        this.craftingLevel.assembler = +value;
+    }
+
     getRecipes() {
 
         this._recipeService.getRecipes("app/data/core-0-12-29.json").subscribe(

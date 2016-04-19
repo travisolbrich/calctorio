@@ -1,5 +1,6 @@
 <h1>Recipes</h1>
-
+<!--<input #box (keyup)="onKey(box.value)">-->
+<input [(ngModel)]="craftingLevel.assembler">
 <ul>
     <li *ngFor="#recipe of recipes">
         <strong>{{ recipe.name }}</strong>: {{recipe.outputCount}} in {{ recipe.getCraftingTime(craftingLevel) }}s
