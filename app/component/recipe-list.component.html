@@ -2,7 +2,7 @@
 
 <ul>
     <li *ngFor="#recipe of recipes">
-        <strong>{{ recipe.name }}</strong> in {{ recipe.time }}s
+        <strong>{{ recipe.name }}</strong>: {{recipe.outputCount}} in {{ recipe.getCraftingTime(craftingLevel) }}s
         <ul>
             <li *ngFor="#ingredient of recipe.ingredients">
                 {{ ingredient.count }}x {{ ingredient.name }}

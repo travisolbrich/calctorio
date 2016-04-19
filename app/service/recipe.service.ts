@@ -4,6 +4,7 @@ import {Http, Response} from "angular2/http";
 import {Observable} from "rxjs/Observable";
 import {Recipe} from "../model/recipe.model";
 import {Ingredient} from "../model/ingredient.model";
+import {Result} from "../model/result.model";
 
 @Injectable()
 export class RecipeService {
@@ -26,17 +27,35 @@ export class RecipeService {
         formatted = [];
 
         body.forEach((recipe:any) => {
-            let toInsert: Recipe = {
-                name: recipe.name,
-                category: recipe.category || 'n/a',
-                enabled: recipe.enabled,
-                time: recipe.energy_required || .5,
-                type: recipe.type,
-                ingredients: [],
-                outputCount: recipe.result_count || 1,
-                ips: null
-            };
+            let toInsert: Recipe = new Recipe(
+                recipe.type,
+                recipe.name,
+                recipe.energy_required || .5,
+                [],
+                recipe.category || 'n/a',
+                recipe.enabled
+            );
 
+            // TODO: Should this actually be in the model?
+            // Some of the recipes (especially chemical ones) can have multiple results
+            if(recipe.results) {
+                let results:Result[] = recipe.results.filter((result: Result) => {
+                    return result.name == recipe.name;
+                });
+
+                if(results.length == 1){
+                    toInsert.outputCount = results[0].amount;
+                    console.debug("Setting outputCount to " + toInsert.outputCount + " for " + toInsert.name);
+                } else {
+                    toInsert.outputCount = 1;
+                    console.debug("Couldn't find value for " + toInsert.name);
+                }
+            } else {
+                // For typical parts use the result_count or default to 1
+                toInsert.outputCount = recipe.result_count || 1;
+            }
+
+            // Turn the vaired ingredient inputs into instances of Ingredient
             recipe.ingredients.forEach((ingredient:any) => {
                 if(ingredient.type != null){
                     toInsert.ingredients.push({
@@ -52,7 +71,6 @@ export class RecipeService {
                 }
             });
 
-            toInsert.ips = toInsert.outputCount / toInsert.time;
             formatted.push(toInsert);
         });
 
