@@ -11,7 +11,7 @@ export class Recipe {
     outputCount:number;
 
     // Create our basic object from a raw (datasource-provided) recipe
-    // TODO: Here or controller?
+    // TODO: Here or service?
     constructor(rawRecipe:any) {
         this.type = rawRecipe.type;
         this.name = rawRecipe.name;
